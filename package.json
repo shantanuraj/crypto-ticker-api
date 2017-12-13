@@ -1,0 +1,10 @@
+{
+  "main": "server.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "dependencies": {
+    "h2o2": "^7.0.1",
+    "hapi": "^17.1.1"
+  }
+}
