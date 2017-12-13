@@ -3,7 +3,7 @@ const H2o2   = require('h2o2')
 const enableCors = require('./cors')
 
 const server = new Server({
-  port: '5002'
+  port: '5003'
 })
 
 const route = {
