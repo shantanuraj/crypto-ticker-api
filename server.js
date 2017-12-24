@@ -5,8 +5,9 @@ const axios  = require('axios').default;
 const enableCors = require('./cors');
 const money = require('./money');
 
-const  adaptBinance = require('./adapters/binance');
-const  adaptKoinex = require('./adapters/koinex');
+const adaptBinance = require('./adapters/binance');
+const adaptKoinex = require('./adapters/koinex');
+const adaptBitrex = require('./adapters/bitrex');
 
 const server = new Server({
   port: '5003'
@@ -28,14 +29,20 @@ const defaultRoute = {
 const binanceRoute = {
   method: 'GET',
   path: '/bnc',
-  handler: () => axios.get(`https://api.binance.com/api/v1/ticker/allPrices`).then(adaptBinance)
+  handler: () => axios.get(`https://api.binance.com/api/v1/ticker/allPrices`).then(adaptBinance),
 };
 
 const koinexRoute = {
   method: 'GET',
   path: '/knx',
-  handler: () => axios.get(`https://koinex.in/api/ticker`).then(adaptKoinex)
+  handler: () => axios.get(`https://koinex.in/api/ticker`).then(adaptKoinex),
 };
+
+const bitrexRoute = {
+  method: 'GET',
+  path: '/brx',
+  handler: (req) => axios.get(`https://bittrex.com/api/v1.1/public/getticker?market=` + req.query.market).then(adaptBitrex),
+}
 
 const routes = [
   defaultRoute,
