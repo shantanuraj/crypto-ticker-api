@@ -13,6 +13,8 @@ const server = new Server({
   port: '5003'
 });
 
+const errorHandler = err => (console.log(err), {});
+
 const defaultRoute = {
   method: 'GET',
   path: '/{p*}',
@@ -29,30 +31,31 @@ const defaultRoute = {
 const binanceRoute = {
   method: 'GET',
   path: '/bnc',
-  handler: () => axios.get(`https://api.binance.com/api/v1/ticker/allPrices`).then(adaptBinance),
+  handler: () => axios.get(`https://api.binance.com/api/v1/ticker/allPrices`).then(adaptBinance).catch(errorHandler),
 };
 
 const koinexRoute = {
   method: 'GET',
   path: '/knx',
-  handler: () => axios.get(`https://koinex.in/api/ticker`).then(adaptKoinex),
+  handler: () => axios.get(`https://koinex.in/api/ticker`).then(adaptKoinex).catch(errorHandler),
 };
 
 const bitrexRoute = {
   method: 'GET',
   path: '/brx',
-  handler: (req) => axios.get(`https://bittrex.com/api/v1.1/public/getticker?market=` + req.query.market).then(adaptBitrex),
+  handler: ({ query: { market } }) => axios.get(`https://bittrex.com/api/v1.1/public/getticker?market=${market}`).then(adaptBitrex).catch(errorHandler),
 }
 
 const routes = [
   defaultRoute,
   binanceRoute,
   koinexRoute,
+  bitrexRoute,
 ];
 
 const start = async () => {
   console.log('Updating rates');
-  await money.init();
+  // await money.init();
   console.log('Rates updated ');
 
   await server.register(H2o2);

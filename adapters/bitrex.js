@@ -6,4 +6,6 @@ const {
   pick,
 } = require('../utils');
 
-const adapt = pick('data.result.ask');
+const adapt = pick('data.result.Ask');
+
+module.exports = adapt;
