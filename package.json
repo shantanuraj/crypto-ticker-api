@@ -1,5 +1,7 @@
 {
+  "name": "crypto-ticker-api",
   "main": "server.js",
+  "license": "MIT",
   "scripts": {
     "start": "node ."
   },
