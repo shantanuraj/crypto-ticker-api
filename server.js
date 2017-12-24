@@ -3,9 +3,14 @@ const H2o2   = require('h2o2');
 const axios  = require('axios').default;
 
 const enableCors = require('./cors');
-const pick = require('./pick');
+const {
+  clone,
+  pick,
+} = require('./utils');
 
 const pickData = pick('data');
+
+const normalizeObj = clone(k => k.toLowerCase(), v => parseFloat(v));
 
 const server = new Server({
   port: '5003'
@@ -33,7 +38,7 @@ const binanceRoute = {
 const koinexRoute = {
   method: 'GET',
   path: '/knx',
-  handler: () => axios.get(`https://koinex.in/api/ticker`).then(pickData)
+  handler: () => axios.get(`https://koinex.in/api/ticker`).then(pick('data.prices')).then(normalizeObj)
 };
 
 const routes = [
