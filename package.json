@@ -4,6 +4,7 @@
     "start": "node ."
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "h2o2": "^7.0.1",
     "hapi": "^17.1.1"
   }
