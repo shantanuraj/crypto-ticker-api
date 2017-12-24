@@ -3,7 +3,7 @@ const H2o2   = require('h2o2');
 const axios  = require('axios').default;
 
 const enableCors = require('./cors');
-const updateRates = require('./money-init');
+const money = require('./money');
 
 const  adaptBinance = require('./adapters/binance');
 const  adaptKoinex = require('./adapters/koinex');
@@ -45,7 +45,7 @@ const routes = [
 
 const start = async () => {
   console.log('Updating rates');
-  await updateRates();
+  await money.init();
   console.log('Rates updated ');
 
   await server.register(H2o2);
