@@ -5,6 +5,8 @@ const axios  = require('axios').default;
 const enableCors = require('./cors');
 const pick = require('./pick');
 
+const pickData = pick('data');
+
 const server = new Server({
   port: '5003'
 });
@@ -24,13 +26,20 @@ const defaultRoute = {
 
 const binanceRoute = {
   method: 'GET',
-  path: '/bin',
-  handler: () => axios.get(`https://api.binance.com/api/v1/ticker/allPrices`).then(pick('data'))
+  path: '/bnc',
+  handler: () => axios.get(`https://api.binance.com/api/v1/ticker/allPrices`).then(pickData)
+};
+
+const koinexRoute = {
+  method: 'GET',
+  path: '/knx',
+  handler: () => axios.get(`https://koinex.in/api/ticker`).then(pickData)
 };
 
 const routes = [
   defaultRoute,
   binanceRoute,
+  koinexRoute,
 ];
 
 server.register(H2o2)
