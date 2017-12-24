@@ -3,14 +3,10 @@ const H2o2   = require('h2o2');
 const axios  = require('axios').default;
 
 const enableCors = require('./cors');
-const {
-  clone,
-  pick,
-} = require('./utils');
+const updateRates = require('./money-init');
 
-const pickData = pick('data');
-
-const normalizeObj = clone(k => k.toLowerCase(), v => parseFloat(v));
+const  adaptBinance = require('./adapters/binance');
+const  adaptKoinex = require('./adapters/koinex');
 
 const server = new Server({
   port: '5003'
@@ -32,13 +28,13 @@ const defaultRoute = {
 const binanceRoute = {
   method: 'GET',
   path: '/bnc',
-  handler: () => axios.get(`https://api.binance.com/api/v1/ticker/allPrices`).then(pickData)
+  handler: () => axios.get(`https://api.binance.com/api/v1/ticker/allPrices`).then(adaptBinance)
 };
 
 const koinexRoute = {
   method: 'GET',
   path: '/knx',
-  handler: () => axios.get(`https://koinex.in/api/ticker`).then(pick('data.prices')).then(normalizeObj)
+  handler: () => axios.get(`https://koinex.in/api/ticker`).then(adaptKoinex)
 };
 
 const routes = [
@@ -47,11 +43,16 @@ const routes = [
   koinexRoute,
 ];
 
-server.register(H2o2)
-  .then(() => {
-    server.ext('onPreResponse', enableCors);
-    server.route(routes);
-    return server.start();
-  })
-  .then(console.log(`Server running on ${server.info.uri}`))
-  .catch(err => console.log('Error', err));
+const start = async () => {
+  console.log('Updating rates');
+  await updateRates();
+  console.log('Rates updated ');
+
+  await server.register(H2o2);
+  server.ext('onPreResponse', enableCors);
+  server.route(routes);
+  await server.start();
+  console.log(`Server running on ${server.info.uri}`);
+};
+
+start().catch(console.log);

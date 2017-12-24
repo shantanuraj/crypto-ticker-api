@@ -21,5 +21,6 @@ const clone =
 
 module.exports = {
   clone,
+  iden,
   pick,
 };
