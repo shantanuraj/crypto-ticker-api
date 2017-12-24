@@ -8,6 +8,7 @@ const money = require('./money');
 const adaptBinance = require('./adapters/binance');
 const adaptKoinex = require('./adapters/koinex');
 const adaptBitrex = require('./adapters/bitrex');
+const adaptBitfinex = require('./adapters/bitfinex');
 
 const server = new Server({
   port: '5003'
@@ -44,18 +45,25 @@ const bitrexRoute = {
   method: 'GET',
   path: '/brx',
   handler: ({ query: { market } }) => axios.get(`https://bittrex.com/api/v1.1/public/getticker?market=${market}`).then(adaptBitrex).catch(errorHandler),
-}
+};
+
+const bitfinexRoute = {
+  method: 'GET',
+  path: '/bfx',
+  handler: ({ query: { market } }) => axios.get(`https://api.bitfinex.com/v1/pubticker/${market}`).then(adaptBitfinex).catch(errorHandler),
+};
 
 const routes = [
   defaultRoute,
   binanceRoute,
   koinexRoute,
   bitrexRoute,
+  bitfinexRoute,
 ];
 
 const start = async () => {
   console.log('Updating rates');
-  // await money.init();
+  await money.init();
   console.log('Rates updated ');
 
   await server.register(H2o2);
