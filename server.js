@@ -44,7 +44,7 @@ const koinexRoute = {
 const bitrexRoute = {
   method: 'GET',
   path: '/brx',
-  handler: ({ query: { market } }) => axios.get(`https://bittrex.com/api/v1.1/public/getticker?market=${market}`).then(adaptBitrex).catch(errorHandler),
+  handler: ({ query: { market } }) => axios.get(`https://bittrex.com/api/v1.1/public/getticker?market=${market}`).then(adaptBitrex(market)).catch(errorHandler),
 };
 
 const bitfinexRoute = {
